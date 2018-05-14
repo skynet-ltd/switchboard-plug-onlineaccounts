@@ -75,7 +75,8 @@ public class OnlineAccounts.SourceSelector : Gtk.Grid {
     }
 
     private void add_plugin_callback (OnlineAccounts.Account account) {
-        var provider = account.account.get_manager ().get_provider (account.account.get_provider_name ());
+        var ag_account = account.account_service.account;
+        var provider = ag_account.manager.get_provider (ag_account.get_provider_name ());
         if (provider == null)
             return;
 
@@ -119,7 +120,7 @@ public class OnlineAccounts.SourceSelector : Gtk.Grid {
         public AccountRow (OnlineAccounts.Account account, Ag.Provider provider) {
             this.account = account;
             image.icon_name = provider.get_icon_name ();
-            username.label = account.account.display_name;
+            username.label = account.account_service.account.display_name ?? _("New Account");
             service.label = "<span font_size=\"small\">%s</span>".printf (GLib.Markup.escape_text (provider.get_display_name ()));
         }
 

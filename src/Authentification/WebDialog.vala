@@ -53,7 +53,7 @@ public class OnlineAccounts.WebDialog : OnlineAccounts.Dialog {
         webview.expand = true;
         var event_box = new Gtk.EventBox ();
         event_box.add (webview);
-        event_box.get_style_context ().add_class (Granite.StyleClass.CONTENT_VIEW);
+        event_box.get_style_context ().add_class (Gtk.STYLE_CLASS_VIEW);
         event_box.expand = true;
         attach (infobar, 0, 0, 1, 1);
         attach (event_box, 0, 1, 1, 1);

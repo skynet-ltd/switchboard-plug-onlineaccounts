@@ -21,45 +21,66 @@
  */
 
 public class OnlineAccounts.AccountsManager : Object {
-    
     public Gee.ArrayList<OnlineAccounts.Account> accounts_available;
     private OnlineAccounts.Account to_delete; // Store it here and wait until the user is sure to remove it.
-    
+
     public signal void account_added (OnlineAccounts.Account account);
     public signal void account_removed (OnlineAccounts.Account account);
-    
+
     private static OnlineAccounts.AccountsManager? accounts_manager = null;
-    
-    public static AccountsManager get_default () {
+
+    public static unowned AccountsManager get_default () {
         if (accounts_manager == null) {
             accounts_manager = new AccountsManager ();
         }
+
         return accounts_manager;
     }
 
     private AccountsManager () {
-        accounts_available = new Gee.ArrayList<OnlineAccounts.Account> ();
+        
     }
+
+    construct {
+        accounts_available = new Gee.ArrayList<OnlineAccounts.Account> ();
+        var manager = new Ag.Manager ();
+        foreach (var accountid in manager.list_enabled ()) {
+            try {
+                var ag_account = manager.load_account (accountid);
+                var provider = manager.get_provider (ag_account.get_provider_name ());
+                if (provider == null)
+                    continue;
+
+                var account = new Account (provider);
+                add_account (account);
+            } catch (Error e) {
+                critical (e.message);
+            }
+        }
+    }
+
     ~AccountsManager () {
         remove_cached_account ();
     }
-    
+
     public void add_account (OnlineAccounts.Account account) {
         accounts_available.add (account);
         account_added (account);
     }
-    
+
     public void remove_cached_account () {
         if (to_delete != null) {
             to_delete.delete_account.begin ();
         }
+
         to_delete = null;
     }
-    
+
     public void restore_cached_account () {
         if (to_delete != null) {
             add_account (to_delete);
         }
+
         to_delete = null;
     }
     
@@ -68,6 +89,7 @@ public class OnlineAccounts.AccountsManager : Object {
         if (to_delete != null) {
             to_delete.delete_account.begin ();
         }
+
         to_delete = account;
         account_removed (account);
     }
