@@ -42,10 +42,12 @@ public class OnlineAccounts.Plugins.LastFMAccount : OnlineAccounts.Account {
         info.set_caption (account.get_provider_name ());
         info.set_identity_type (Signon.IdentityType.APP);
         info.set_secret ("", true);
-        info.set_method (method, {"lastfm", null});
+        info.set_method (method, "lastfm");
         info.access_control_list_append (new Signon.SecurityContext.from_values ("*", "*"));
-        var allowed_realms = session_data.lookup_value ("AllowedRealms", null).dup_strv ();
-        info.set_realms (allowed_realms);
+
+        foreach(string realm in session_data.lookup_value ("AllowedRealms", null).dup_strv ()){
+            info.set_realms (realm);
+        }
         identity = new Signon.Identity ();
         identity.store_credentials_with_info (info, store_credentials_callback);
     }

@@ -44,7 +44,7 @@ public class OnlineAccounts.Plugins.MailAccount : OnlineAccounts.Account {
         info.set_caption (account.get_provider_name ());
         info.set_identity_type (Signon.IdentityType.APP);
         info.set_secret ("", true);
-        info.set_method ("mail", {"mail", null});
+        info.set_method ("mail", "mail");
         info.access_control_list_append (new Signon.SecurityContext.from_values ("%s/bin/switchboard".printf (Build.CMAKE_INSTALL_PREFIX), "*"));
         identity = new Signon.Identity ();
         identity.store_credentials_with_info (info, IdentityStoreCredentialsCallback);

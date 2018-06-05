@@ -167,10 +167,11 @@ public class OnlineAccounts.ACListBox : Gtk.ListBox {
                 }
 
                 var path = get_app_path ();
-                var acl = new List<Signon.SecurityContext> ();
-                info.get_access_control_list ().foreach ((nth) => {
-                    if (nth.sys_ctx != path) {
-                        acl.append (nth);
+                // var acl = new List<Signon.SecurityContext> ();
+                unowned Signon.SecurityContextList acl = info.get_access_control_list ();
+                acl.foreach ((nth) => {
+                    if (nth.sys_ctx == path) {
+                        acl.remove(nth);
                     }
                 });
 
